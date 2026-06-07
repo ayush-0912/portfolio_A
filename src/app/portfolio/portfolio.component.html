@@ -1,0 +1,184 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white font-sans">
+  <!-- Navigation (Sticky) -->
+  <nav class="fixed top-0 w-full bg-gray-900/90 backdrop-blur-sm z-50 border-b border-gray-700">
+    <div class="max-w-6xl mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          AYUSH KUKEKAR
+        </h1>
+        <div class="hidden md:flex space-x-2">
+          <ng-container *ngTemplateOutlet="navItems"></ng-container>
+        </div>
+        <button (click)="toggleMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-700 transition-colors">
+          <lucide-icon [name]="isMenuOpen ? 'x' : 'menu'" [size]="24"></lucide-icon>
+        </button>
+      </div>
+      <div *ngIf="isMenuOpen" class="md:hidden mt-4 pb-4 space-y-2">
+        <ng-container *ngTemplateOutlet="navItems"></ng-container>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="home" class="min-h-screen flex items-center justify-center pt-20">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">AYUSH KUKEKAR</h1>
+      <p class="text-xl md:text-2xl text-gray-300 mb-8">Full Stack Developer & AI/ML Specialist</p>
+      <div class="flex flex-wrap justify-center gap-6 text-gray-400 mb-12">
+        <span class="flex items-center gap-2"><lucide-icon name="map-pin" size="18"></lucide-icon> Nagpur, Maharashtra</span>
+        <span class="flex items-center gap-2"><lucide-icon name="phone" size="18"></lucide-icon> +91 7666217137</span>
+        <a href="mailto:ayushkukekar09&#64;gmail.com" class="hover:text-blue-400 transition-colors flex items-center gap-2">
+          <lucide-icon name="mail" size="18"></lucide-icon> ayushkukekar09&#64;gmail.com
+        </a>
+      </div>
+      <div class="flex justify-center gap-4">
+        <a href="https://www.linkedin.com/in/ayush-kukekar-a5b960257" target="_blank" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold transition-all">LinkedIn Profile</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="about" class="py-20 bg-gray-800/30">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-12 flex items-center gap-4"><lucide-icon name="award" class="text-blue-500"></lucide-icon> Education</h2>
+      <div class="space-y-8">
+        <div class="relative pl-8 border-l-2 border-blue-500">
+          <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1"></div>
+          <div class="flex justify-between items-start flex-wrap">
+            <h4 class="text-xl font-bold">Yeshwantrao Chavan College of Engineering</h4>
+            <span class="text-blue-400 font-medium">2021 - 2025</span>
+          </div>
+          <p class="text-gray-300">Bachelor's of Technology (Computer Science and Engineering)</p>
+          <p class="text-sm text-gray-500 mt-1">CGPA: 8.2</p>
+        </div>
+        <div class="relative pl-8 border-l-2 border-purple-500">
+          <div class="absolute w-4 h-4 bg-purple-500 rounded-full -left-[9px] top-1"></div>
+          <div class="flex justify-between items-start flex-wrap">
+            <h4 class="text-lg font-bold">Prerna Junior College, Nagpur</h4>
+            <span class="text-purple-400 font-medium">May 2021</span>
+          </div>
+          <p class="text-gray-300">Grade: 92.30</p>
+        </div>
+        <div class="relative pl-8 border-l-2 border-gray-600">
+          <div class="absolute w-4 h-4 bg-gray-600 rounded-full -left-[9px] top-1"></div>
+          <div class="flex justify-between items-start flex-wrap">
+            <h4 class="text-lg font-bold">Somalwar High School, Nagpur</h4>
+            <span class="text-gray-500 font-medium">May 2019</span>
+          </div>
+          <p class="text-gray-300">Grade: 86.6</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience" class="py-20">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-16 text-center">Work Experience</h2>
+      <div class="space-y-12">
+        <div *ngFor="let exp of experiences" class="group bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-blue-500 transition-all">
+          <div class="flex flex-col md:flex-row justify-between mb-6">
+            <div>
+              <h3 class="text-2xl font-bold text-white">{{exp.company}}</h3>
+              <p class="text-blue-400 font-medium">{{exp.role}}</p>
+            </div>
+            <span class="text-gray-500 text-sm mt-2 md:mt-0 font-mono">{{exp.duration}}</span>
+          </div>
+          <ul class="space-y-3 text-gray-300 mb-6">
+            <li *ngFor="let bullet of exp.bullets" class="flex gap-3">
+              <span class="text-blue-500">•</span> {{bullet}}
+            </li>
+          </ul>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let t of exp.techs" class="px-3 py-1 bg-gray-900 text-blue-300 text-xs rounded-full border border-blue-900/50">{{t}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="py-20 bg-gray-800/30">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-16 text-center">Projects</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div *ngFor="let proj of projects" class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:shadow-2xl hover:shadow-blue-500/10 transition-all">
+          <div class="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <lucide-icon [name]="proj.icon" class="text-blue-400"></lucide-icon>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{{proj.title}}</h3>
+          <p class="text-blue-500 text-xs font-bold uppercase tracking-wider mb-4">{{proj.type}}</p>
+          <p class="text-gray-400 text-sm mb-6 leading-relaxed">{{proj.description}}</p>
+          <ul class="text-xs text-gray-500 space-y-2 mb-6">
+            <li *ngFor="let b of proj.bullets">• {{b}}</li>
+          </ul>
+          <div class="flex flex-wrap gap-2 mt-auto">
+            <span *ngFor="let t of proj.techs" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-1 rounded">{{t}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="py-20">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold mb-16">Technical Skills</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
+          <h4 class="text-blue-400 font-bold mb-6 uppercase tracking-widest text-sm">Languages & Frameworks</h4>
+          <p class="text-gray-300 leading-loose">C, C++, JAVA, Python, HTML, CSS, JavaScript, TypeScript, Next.js, Django, LangChain, Streamlit, pandas, RAG</p>
+        </div>
+        <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
+          <h4 class="text-purple-400 font-bold mb-6 uppercase tracking-widest text-sm">Core Engineering</h4>
+          <p class="text-gray-300 leading-loose">OOPs, DBMS, Data Structures And Algorithms</p>
+        </div>
+        <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
+          <h4 class="text-green-400 font-bold mb-6 uppercase tracking-widest text-sm">Platforms & DB</h4>
+          <p class="text-gray-300 leading-loose">VS Code, Apache, IntelliJ IDEA, Power Apps, MySql, Postgresql, Jupyter Notebook</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements -->
+  <section id="achievements" class="py-20 bg-blue-600/5">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-16 text-center">Achievements</h2>
+      <div class="grid gap-4">
+        <div class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-yellow-500 flex items-start gap-4">
+          <lucide-icon name="award" class="text-yellow-500 shrink-0"></lucide-icon>
+          <p class="text-gray-300">Recognized as <strong>Intern of the Month 4 times</strong> during a 9-month internship at Solar Industries India Ltd.</p>
+        </div>
+        <div class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-blue-500 flex items-start gap-4">
+          <lucide-icon name="star" class="text-blue-500 shrink-0"></lucide-icon>
+          <p class="text-gray-300">Secured <strong>2nd highest score (91%)</strong> in Milestone 3 during LTIMindtree .NET Full Stack training.</p>
+        </div>
+        <div class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-green-500 flex items-start gap-4">
+          <lucide-icon name="code" class="text-green-500 shrink-0"></lucide-icon>
+          <p class="text-gray-300">Competitive Programming: <strong>CodeChef (1400+)</strong>, LeetCode (250+ questions), HackerRank (3 star).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-12 border-t border-gray-800 text-center text-gray-500 text-sm">
+    <p>© 2026 Ayush Kukekar </p>
+  </footer>
+</div>
+
+<ng-template #navItems>
+  <button *ngFor="let item of [
+    {id:'home', label:'Home'}, 
+    {id:'about', label:'Education'}, 
+    {id:'experience', label:'Experience'}, 
+    {id:'projects', label:'Projects'}, 
+    {id:'skills', label:'Skills'}, 
+    {id:'achievements', label:'Achievements'}]"
+    (click)="scrollToSection(item.id)"
+    [ngClass]="activeSection === item.id ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
+    class="px-4 py-2 rounded-lg transition-all text-sm font-medium"
+  >
+    {{item.label}}
+  </button>
+</ng-template>
