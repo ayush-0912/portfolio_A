@@ -31,13 +31,16 @@ jobs:
 
       - name: Prepare for GitHub Pages
         run: |
-          cd dist/my-portfolio-angular/browser
+          OUT=$(find dist -type d -name browser | head -1)
+          echo "Output folder: $OUT"
+          cd "$OUT"
           if [ ! -f index.html ] && [ -f index.csr.html ]; then cp index.csr.html index.html; fi
           cp index.html 404.html
+          echo "OUT_DIR=$OUT" >> $GITHUB_ENV
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/my-portfolio-angular/browser
+          path: ${{ env.OUT_DIR }}
 
   deploy:
     needs: build
