@@ -31,9 +31,37 @@
           <lucide-icon name="mail" size="18"></lucide-icon> ayushkukekar09&#64;gmail.com
         </a>
       </div>
-      <div class="flex justify-center gap-4">
-        <a href="https://www.linkedin.com/in/ayush-kukekar-a5b960257" target="_blank" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold transition-all">LinkedIn Profile</a>
-      </div>
+
+     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+
+  <!-- LinkedIn (primary) -->
+  <a href="https://www.linkedin.com/in/ayush-kukekar-a5b960257" target="_blank" rel="noopener noreferrer"
+     class="group inline-flex items-center justify-center gap-2.5 w-full sm:w-52 h-14 rounded-xl font-semibold text-white
+            bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500
+            shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40
+            hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300">
+    <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    </svg>
+    LinkedIn Profile
+  </a>
+
+  <!-- Resume (gradient outline) -->
+  <a href="assets/Ayush_Kukekar_Resume.pdf" target="_blank" rel="noopener"
+     class="group inline-flex w-full sm:w-52 h-14 rounded-xl p-[1.5px]
+            bg-gradient-to-r from-blue-500 to-purple-500
+            shadow-lg shadow-purple-500/10 hover:shadow-xl hover:shadow-purple-500/30
+            hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300">
+    <span class="inline-flex items-center justify-center gap-2.5 w-full h-full rounded-[10px]
+                 bg-gray-900 group-hover:bg-transparent
+                 font-semibold text-white transition-all duration-300">
+      <lucide-icon name="file-text" [size]="20"
+                   class="text-blue-400 group-hover:text-white transition-all duration-300 group-hover:scale-110"></lucide-icon>
+      Resume
+    </span>
+  </a>
+
+</div>
     </div>
   </section>
 
@@ -125,17 +153,9 @@
     <div class="max-w-6xl mx-auto px-6 text-center">
       <h2 class="text-3xl font-bold mb-16">Technical Skills</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
-          <h4 class="text-blue-400 font-bold mb-6 uppercase tracking-widest text-sm">Languages & Frameworks</h4>
-          <p class="text-gray-300 leading-loose">C, C++, JAVA, Python, HTML, CSS, JavaScript, TypeScript, Next.js, Django, LangChain, Streamlit, pandas, RAG</p>
-        </div>
-        <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
-          <h4 class="text-purple-400 font-bold mb-6 uppercase tracking-widest text-sm">Core Engineering</h4>
-          <p class="text-gray-300 leading-loose">OOPs, DBMS, Data Structures And Algorithms</p>
-        </div>
-        <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
-          <h4 class="text-green-400 font-bold mb-6 uppercase tracking-widest text-sm">Platforms & DB</h4>
-          <p class="text-gray-300 leading-loose">VS Code, Apache, IntelliJ IDEA, Power Apps, MySql, Postgresql, Jupyter Notebook</p>
+        <div *ngFor="let s of skills" class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700">
+          <h4 [ngClass]="s.color" class="font-bold mb-6 uppercase tracking-widest text-sm">{{s.title}}</h4>
+          <p class="text-gray-300 leading-loose">{{s.items}}</p>
         </div>
       </div>
     </div>
@@ -146,17 +166,9 @@
     <div class="max-w-4xl mx-auto px-6">
       <h2 class="text-3xl font-bold mb-16 text-center">Achievements</h2>
       <div class="grid gap-4">
-        <div class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-yellow-500 flex items-start gap-4">
+        <div *ngFor="let a of achievements" class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-yellow-500 flex items-start gap-4">
           <lucide-icon name="award" class="text-yellow-500 shrink-0"></lucide-icon>
-          <p class="text-gray-300">Recognized as <strong>Intern of the Month 4 times</strong> during a 9-month internship at Solar Industries India Ltd.</p>
-        </div>
-        <div class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-blue-500 flex items-start gap-4">
-          <lucide-icon name="star" class="text-blue-500 shrink-0"></lucide-icon>
-          <p class="text-gray-300">Secured <strong>2nd highest score (91%)</strong> in Milestone 3 during LTIMindtree .NET Full Stack training.</p>
-        </div>
-        <div class="bg-gray-800/50 p-6 rounded-xl border-l-4 border-green-500 flex items-start gap-4">
-          <lucide-icon name="code" class="text-green-500 shrink-0"></lucide-icon>
-          <p class="text-gray-300">Competitive Programming: <strong>CodeChef (1400+)</strong>, LeetCode (250+ questions), HackerRank (3 star).</p>
+          <p class="text-gray-300">{{a}}</p>
         </div>
       </div>
     </div>
@@ -181,4 +193,10 @@
   >
     {{item.label}}
   </button>
+  <a href="assets/Ayush_Kukekar_Resume.pdf" target="_blank" rel="noopener"
+     class="px-4 py-2 rounded-lg transition-all text-sm font-medium border border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white">
+    Resume
+  </a>
 </ng-template>
+
+<app-chatbot></app-chatbot>
