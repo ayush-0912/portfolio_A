@@ -25,7 +25,8 @@ export interface SkillGroup {
 export const PORTFOLIO = {
   name: 'Ayush Kukekar',
   title: 'Full Stack Developer & AI/ML Specialist',
-  location: 'Nagpur, Maharashtra',
+  location: 'Navi Mumbai, Maharashtra',
+  hometown: 'Nagpur, Maharashtra',
   phone: '+91 7666217137',
   email: 'ayushkukekar09@gmail.com',
   linkedin: 'https://www.linkedin.com/in/ayush-kukekar-a5b960257',

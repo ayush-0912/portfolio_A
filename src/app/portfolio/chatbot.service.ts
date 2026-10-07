@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PORTFOLIO as P, EXPERIENCES, PROJECTS } from './portfolio-data';
+import { CHAT_API } from '../chat-config';
 
 interface Intent {
   keys: string[];
@@ -46,6 +47,28 @@ export class ChatbotService {
     },
   ];
 
+  /** AI answer from the backend; falls back to the rule-based reply on any failure. */
+  async ask(question: string): Promise<string> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30000);
+    try {
+      const res = await fetch(`${CHAT_API}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+        signal: controller.signal,
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return data.answer || this.reply(question);
+    } catch {
+      return this.reply(question);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /** Rule-based answer (offline fallback). */
   reply(question: string): string {
     const tokens = question
       .toLowerCase()
