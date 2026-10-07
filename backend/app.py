@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
@@ -12,7 +13,8 @@ load_dotenv()
 
 docs = DirectoryLoader("data", glob="**/*.md", loader_cls=TextLoader).load()
 chunks = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50).split_documents(docs)
-store = FAISS.from_documents(chunks, HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"))
+# store = FAISS.from_documents(chunks, HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"))
+store = FAISS.from_documents(chunks, FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5"))
 retriever = store.as_retriever(search_kwargs={"k": 4})
 llm = ChatGroq(model=os.environ["MODEL_NAME"], temperature=0.2, max_tokens=600)
 
