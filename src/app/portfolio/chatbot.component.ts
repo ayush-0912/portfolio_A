@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatbotService } from './chatbot.service';
@@ -18,7 +18,7 @@ import { ChatbotService } from './chatbot.service';
 
     <div
       *ngIf="open"
-      class="fixed bottom-24 right-6 z-50 w-80 sm:w-96 h-[28rem] bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl flex flex-col text-white"
+      class="fixed bottom-24 right-6 z-50 w-80 sm:w-[34rem] lg:w-[40rem] max-w-[calc(100vw-2rem)] h-[28rem] sm:h-[32rem] max-h-[calc(100vh-8rem)] bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl flex flex-col text-white"
     >
       <div class="px-4 py-3 border-b border-gray-700 font-semibold text-blue-400">Ask about Ayush</div>
 
@@ -30,15 +30,25 @@ import { ChatbotService } from './chatbot.service';
             >{{ m.text }}</span
           >
         </div>
+
+        <!-- Typing indicator -->
+        <div *ngIf="loading" class="text-left">
+          <span class="inline-flex items-center gap-1 px-3 py-3 rounded-xl bg-gray-800">
+            <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+            <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]"></span>
+            <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]"></span>
+          </span>
+        </div>
       </div>
 
       <div class="px-3 pb-2 flex flex-wrap gap-2">
         <button
           *ngFor="let s of suggestions"
-          (click)="send(s)"
-          class="text-xs px-2 py-1 rounded-full border border-blue-900/50 text-blue-300 hover:bg-gray-800"
+          (click)="send(s.question)"
+          [disabled]="loading"
+          class="text-xs px-2 py-1 rounded-full border border-blue-900/50 text-blue-300 hover:bg-gray-800 disabled:opacity-50"
         >
-          {{ s }}
+          {{ s.label }}
         </button>
       </div>
 
@@ -46,10 +56,18 @@ import { ChatbotService } from './chatbot.service';
         <input
           [(ngModel)]="input"
           (keyup.enter)="send(input)"
+          [disabled]="loading"
+          maxlength="500"
           placeholder="Type your question..."
-          class="flex-1 bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none"
+          class="flex-1 bg-gray-800 rounded-lg px-3 py-2 text-sm outline-none disabled:opacity-60"
         />
-        <button (click)="send(input)" class="bg-blue-600 hover:bg-blue-700 px-4 rounded-lg text-sm">Send</button>
+        <button
+          (click)="send(input)"
+          [disabled]="loading"
+          class="bg-blue-600 hover:bg-blue-700 px-4 rounded-lg text-sm disabled:opacity-50"
+        >
+          Send
+        </button>
       </div>
     </div>
   `,
@@ -59,18 +77,58 @@ export class ChatbotComponent {
 
   open = false;
   input = '';
-  suggestions = ['Education', 'Experience', 'Projects', 'Skills', 'Achievements', 'Contact'];
+  loading = false;
+
+  suggestions = [
+    { label: 'Education', question: "What is Ayush's education?" },
+    { label: 'Experience', question: "What is Ayush's work experience?" },
+    { label: 'Projects', question: 'What projects has Ayush built?' },
+    { label: 'Skills', question: "What are Ayush's technical skills?" },
+    { label: 'Achievements', question: "What are Ayush's achievements and certifications?" },
+    { label: 'Contact', question: "How can I contact Ayush?" },
+  ];
+
   messages: { from: 'user' | 'bot'; text: string }[] = [
     { from: 'bot', text: `Hi! Ask me anything about Ayush.` },
   ];
 
-  constructor(private bot: ChatbotService) {}
+  constructor(private bot: ChatbotService, private host: ElementRef<HTMLElement>) {}
 
-  send(text: string) {
-    const q = text.trim();
-    if (!q) return;
-    this.messages.push({ from: 'user', text: q }, { from: 'bot', text: this.bot.reply(q) });
+  /** Close the chat when the user clicks anywhere outside it. */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.open) return;
+    const path = event.composedPath();
+    if (!path.includes(this.host.nativeElement)) {
+      this.open = false;
+    }
+  }
+
+  /** Close the chat with the Escape key. */
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.open = false;
+  }
+
+  async send(text: string) {
+    const q = (text || '').trim();
+    if (!q || this.loading) return;
+
+    this.messages.push({ from: 'user', text: q });
     this.input = '';
+    this.loading = true;
+    this.scrollToBottom();
+
+    try {
+      const answer = await this.bot.ask(q);
+      this.messages.push({ from: 'bot', text: answer });
+    } finally {
+      this.loading = false;
+      this.scrollToBottom();
+    }
+  }
+
+  private scrollToBottom() {
     setTimeout(() => {
       if (this.scrollEl) this.scrollEl.nativeElement.scrollTop = this.scrollEl.nativeElement.scrollHeight;
     });
