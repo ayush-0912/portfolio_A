@@ -16,7 +16,7 @@ store = FAISS.from_documents(chunks, HuggingFaceEmbeddings(model_name="sentence-
 retriever = store.as_retriever(search_kwargs={"k": 4})
 llm = ChatGroq(model=os.environ["MODEL_NAME"], temperature=0.2, max_tokens=600)
 
-HIGHLIGHT = (
+HIGHLIGHT = (   
     "Ayush works at LTIMindtree on a Google client project focused on Python open-source "
     "package upgradation. He interacts daily with Google developers, and their guidance and "
     "code reviews have helped him learn many things and grow as an engineer."
@@ -51,7 +51,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://ayush-0912.github.io"],
-    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1)(:\d+)?$",
+    # allow_origin_regex=r"^http://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_methods=["POST", "OPTIONS"],
     allow_headers=["*"],
 )
