@@ -6,6 +6,16 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Wake up the chatbot backend as soon as the page opens -->
+  <script>
+    (function () {
+      var BACKEND_URL = 'https://YOUR-BACKEND-URL'; // <- replace with your server URL (no trailing slash)
+      try {
+        fetch(BACKEND_URL + '/health', { mode: 'no-cors', cache: 'no-store' }).catch(function () {});
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>
