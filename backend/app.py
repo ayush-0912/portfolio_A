@@ -1,4 +1,6 @@
 import os
+import time
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -11,14 +13,38 @@ from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 load_dotenv()
 
-docs = DirectoryLoader("data", glob="**/*.md", loader_cls=TextLoader).load()
-chunks = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50).split_documents(docs)
-# store = FAISS.from_documents(chunks, HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"))
-store = FAISS.from_documents(chunks, FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5"))
+# ---------- Logging (goes to stdout, so Render shows it in Logs) ----------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    force=True,
+)
+log = logging.getLogger("portfolio-chat")
+
+def one_line(text: str) -> str:
+    """Keep each log entry on a single line."""
+    return " ".join(str(text).split())
+
+INDEX_DIR = "faiss_index"
+# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+
+if os.path.exists(INDEX_DIR):
+    # Fast path: load the prebuilt index from disk (takes seconds)
+    store = FAISS.load_local(INDEX_DIR, embeddings, allow_dangerous_deserialization=True)
+    log.info("Loaded FAISS index from disk")
+else:
+    # Slow path: build the index once, then save it for next time
+    docs = DirectoryLoader("data", glob="**/*.md", loader_cls=TextLoader).load()
+    chunks = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50).split_documents(docs)
+    store = FAISS.from_documents(chunks, embeddings)
+    store.save_local(INDEX_DIR)
+    log.info("Built and saved FAISS index (%d chunks)", len(chunks))
+
 retriever = store.as_retriever(search_kwargs={"k": 4})
 llm = ChatGroq(model=os.environ["MODEL_NAME"], temperature=0.2, max_tokens=600)
 
-HIGHLIGHT = (   
+HIGHLIGHT = (
     "Ayush works at LTIMindtree on a Google client project focused on Python open-source "
     "package upgradation. He interacts daily with Google developers, and their guidance and "
     "code reviews have helped him learn many things and grow as an engineer."
@@ -54,7 +80,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://ayush-0912.github.io"],
     # allow_origin_regex=r"^http://(localhost|127\.0\.0\.1)(:\d+)?$",
-    allow_methods=["POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "OPTIONS"],  # GET added for the /health readiness check
     allow_headers=["*"],
 )
 
@@ -64,8 +90,15 @@ class Ask(BaseModel):
 @app.post("/chat")
 def chat(body: Ask):
     q = body.question[:500]
-    context = "\n\n".join(d.page_content for d in retriever.invoke(q))
-    reply = llm.invoke(PROMPT.format(highlight=HIGHLIGHT, context=context, question=q))
+    log.info("QUESTION: %s", one_line(q))
+    start = time.time()
+    try:
+        context = "\n\n".join(d.page_content for d in retriever.invoke(q))
+        reply = llm.invoke(PROMPT.format(highlight=HIGHLIGHT, context=context, question=q))
+    except Exception:
+        log.exception("FAILED to answer: %s", one_line(q))
+        raise
+    log.info("ANSWER (%.1fs): %s", time.time() - start, one_line(reply.content))
     return {"answer": reply.content}
 
 @app.get("/health")
